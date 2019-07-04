@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 
 	"github.com/yi-zhang/rival-710-extreme-feedback/utils"
 
@@ -13,7 +14,7 @@ import (
 
 const (
 	game          = "CI_CD"
-	keepAliveTime = float64(15000)
+	keepAliveTime = 15000
 )
 
 var (
@@ -27,6 +28,7 @@ var (
 
 func init() {
 	loadAPIs()
+	keepAlive()
 }
 
 func loadAPIs() {
@@ -44,4 +46,22 @@ func loadAPIs() {
 	removeEventAPI = fmt.Sprintf("%s/remove_game_event", host)
 	removeGameAPI = fmt.Sprintf("%s/remove_game", host)
 	keepAliveAPI = fmt.Sprintf("%s/game_heartbeat", host)
+}
+
+func keepAlive() {
+	var (
+		loop     func()
+		interval = time.Duration(utils.MaxInt(5000, keepAliveTime-5000))
+	)
+	loop = func() {
+		data := map[string]interface{}{"game": game}
+		if utils.PostJSON(keepAliveAPI, data) {
+			log.Println("Keep alive request sent.")
+		}
+		select {
+		case <-time.After(interval * time.Millisecond):
+			loop()
+		}
+	}
+	go loop()
 }
