@@ -21,11 +21,11 @@ type ControlMeta struct {
 
 // BindMeta contains data to register events and provides default event behaviors
 type BindMeta struct {
-	Game          string        `json:"game"`
-	Event         string        `json:"event"`
-	Handlers      []interface{} `json:"handlers,omitempty"`
-	Pattern       string        `json:"pattern,omitempty"`
-	ValueOptional bool          `json:"value_optional,omitempty"`
+	Game          string          `json:"game"`
+	Event         string          `json:"event"`
+	Handlers      []DeviceHandler `json:"handlers,omitempty"`
+	Pattern       string          `json:"pattern,omitempty"`
+	ValueOptional bool            `json:"value_optional,omitempty"`
 }
 
 // TriggerMeta contains data to fire registered events with necessary inputs
