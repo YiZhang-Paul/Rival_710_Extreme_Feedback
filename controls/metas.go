@@ -1,5 +1,9 @@
 package controls
 
+import (
+	"github.com/yi-zhang/rival-710-extreme-feedback/utils"
+)
+
 // NotificationMeta contains required information from ci/cd services
 type NotificationMeta struct {
 	Event string      `json:"event"`
@@ -31,4 +35,30 @@ type TriggerMeta struct {
 	Data  *struct {
 		Value interface{} `json:"value"`
 	} `json:"data"`
+}
+
+// ColorMeta for device illumination control
+type ColorMeta struct {
+	ControlMeta
+	Color     *utils.RGB `json:"color"`
+	Frequency float64    `json:"frequency,omitempty"`
+	Limit     int        `json:"limit,omitempty"`
+}
+
+// ScreenMeta for OLED screen control
+type ScreenMeta struct {
+	ControlMeta
+	Content []string `json:"content"`
+	Icon    int      `json:"icon,omitempty"`
+	Prefix  string   `json:"prefix,omitempty"`
+	Suffix  string   `json:"suffix,omitempty"`
+	Bold    bool     `json:"bold,omitempty"`
+}
+
+// TactileMeta for tactile feedback control
+type TactileMeta struct {
+	ControlMeta
+	Type      string `json:"type"`
+	Frequency int    `json:"frequency,omitempty"`
+	Limit     int    `json:"limit,omitempty"`
 }
