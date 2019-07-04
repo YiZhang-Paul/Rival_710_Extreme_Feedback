@@ -1,6 +1,8 @@
 package rival710
 
 import (
+	"fmt"
+	"math"
 	"strconv"
 	"time"
 
@@ -52,6 +54,31 @@ func (sc *ScreenControl) applyShift(meta controls.ScreenMeta, interval, event in
 	}
 	sc.event = event
 	go loop(0)
+	return true
+}
+
+func (sc *ScreenControl) startTimer(meta controls.ScreenMeta, event, seconds int, prefix string) bool {
+	if seconds > 0 && math.Abs(sc.totalSeconds-seconds) >= 1.5 {
+		sc.totalSeconds = seconds
+	}
+	if sc.event == event {
+		return false
+	}
+	var loop func()
+	loop = func() {
+		if sc.event != event {
+			return
+		}
+		text := fmt.Sprintf("%s%s", prefix, utils.FormatTime(sc.totalSeconds))
+		sc.applyText(meta, text, event)
+		select {
+		case <-time.After(time.Second):
+			sc.totalSeconds++
+			loop()
+		}
+	}
+	sc.event = event
+	go loop()
 	return true
 }
 
