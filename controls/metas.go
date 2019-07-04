@@ -62,3 +62,24 @@ type TactileMeta struct {
 	Frequency int    `json:"frequency,omitempty"`
 	Limit     int    `json:"limit,omitempty"`
 }
+
+// NewBindMeta creates a basic BindMeta that can be further customized
+func NewBindMeta(game, event string) *BindMeta {
+	return &BindMeta{
+		Game:          game,
+		Event:         event,
+		ValueOptional: true,
+		Handlers:      make([]DeviceHandler, 0),
+	}
+}
+
+// NewTriggerMeta creates a basic TriggerMeta that can be further customized
+func NewTriggerMeta(game, event string, value interface{}) *TriggerMeta {
+	return &TriggerMeta{
+		Game:  game,
+		Event: event,
+		Data: &struct {
+			Value interface{} `json:"value"`
+		}{value},
+	}
+}
