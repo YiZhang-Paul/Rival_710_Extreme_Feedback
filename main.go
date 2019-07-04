@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 
 	_ "github.com/joho/godotenv/autoload"
@@ -24,4 +25,7 @@ func main() {
 	} else {
 		log.Printf("Subscription created. ID: %s\n", id)
 	}
+
+	log.Printf("Server started listening on port %s.\n", port)
+	http.ListenAndServe(fmt.Sprintf(":%s", port), getRoutes())
 }
