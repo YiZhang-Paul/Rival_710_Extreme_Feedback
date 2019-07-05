@@ -9,3 +9,21 @@ func NextIndex(collection []string, index int) int {
 	}
 	return index + 1
 }
+
+// TernaryBool is a simple implementation of ternary operator.
+// Only use this for trivial assignments as all expressions will be evaluated
+func TernaryBool(condition, ifTrue, ifFalse bool) bool {
+	if condition {
+		return ifTrue
+	}
+	return ifFalse
+}
+
+// TernaryInt is a simple implementation of ternary operator.
+// Only use this for trivial assignments as all expressions will be evaluated
+func TernaryInt(condition bool, ifTrue, ifFalse int) int {
+	if condition {
+		return ifTrue
+	}
+	return ifFalse
+}

@@ -4,6 +4,7 @@ import (
 	"log"
 	"math"
 	"strconv"
+	"time"
 
 	"github.com/yi-zhang/rival-710-extreme-feedback/controls"
 	"github.com/yi-zhang/rival-710-extreme-feedback/utils"
@@ -43,58 +44,100 @@ func (cc ColorControl) bindBreath(meta controls.ColorMeta, event int) bool {
 		return false
 	}
 	var (
-		colors = getBreathColorsInRanges(meta.Color, meta.Frequency)
+		colors = getBreathColorRanges(meta.Color, meta.Frequency)
 		data   = cc.newBindMeta(meta.Game, strconv.Itoa(event), colors)
 	)
 	return utils.PostJSON(meta.BindAPI, data)
 }
 
-func getBreathColorsInRanges(start *utils.RGB, frequency float64) []map[string]interface{} {
-	var (
-		colors = getBreathColors(start, frequency)
-		steps  = 100 / len(colors)
-	)
-	if steps > 1 {
-		steps--
+func (cc *ColorControl) applyStatic(meta controls.ColorMeta, event int) bool {
+	cc.event = 0
+	data := controls.NewTriggerMeta(meta.Game, strconv.Itoa(event), 1)
+	return utils.PostJSON(meta.TriggerAPI, data)
+}
+
+func (cc *ColorControl) applyBlink(meta controls.ColorMeta, event int) bool {
+	if cc.event == event {
+		return false
 	}
-	ranges := make([]map[string]interface{}, 0)
+	var (
+		loop     func(bool)
+		interval = time.Duration(1000/meta.Frequency) * time.Millisecond
+	)
+	loop = func(on bool) {
+		if cc.event != event {
+			return
+		}
+		value := utils.TernaryInt(on, 1, 0)
+		data := controls.NewTriggerMeta(meta.Game, strconv.Itoa(event), value)
+		utils.PostJSON(meta.TriggerAPI, data)
+		select {
+		case <-time.After(interval):
+			loop(!on)
+		}
+	}
+	cc.event = event
+	go loop(false)
+	return true
+}
+
+func (cc *ColorControl) applyBreath(meta controls.ColorMeta, event int) bool {
+	if cc.event == event {
+		return false
+	}
+	var loop func(int, bool)
+	loop = func(value int, up bool) {
+		if cc.event != event {
+			return
+		}
+		data := controls.NewTriggerMeta(meta.Game, strconv.Itoa(event), value)
+		utils.PostJSON(meta.TriggerAPI, data)
+		up = utils.TernaryBool(up, value != 100, value == 0)
+		value = utils.TernaryInt(up, value+1, value-1)
+		select {
+		case <-time.After(10 * time.Millisecond):
+			loop(value, up)
+		}
+	}
+	cc.event = event
+	go loop(0, true)
+	return true
+}
+
+func getBreathColorRanges(start *utils.RGB, frequency float64) []map[string]interface{} {
+	var (
+		ranges = make([]map[string]interface{}, 0)
+		colors = getBreathColors(start, frequency)
+		steps  = utils.MinInt(1, 100/len(colors))
+	)
 	for i, color := range colors {
 		low := (steps + 1) * i
-		newRange := map[string]interface{}{
+		high := utils.MinInt(100, low+steps)
+		ranges = append(ranges, map[string]interface{}{
 			"low":   low,
+			"high":  utils.TernaryInt(i != len(colors)-1, high, 100),
 			"color": color,
-			"high":  100,
-		}
-		if i != len(colors)-1 {
-			newRange["high"] = utils.MaxInt(100, low+steps)
-		}
-		ranges = append(ranges, newRange)
+		})
 	}
 	return ranges
 }
 
-func getBreathColors(start *utils.RGB, frequency float64) []*utils.RGB {
+func getBreathColors(base *utils.RGB, frequency float64) []*utils.RGB {
 	var (
 		colors = make([]*utils.RGB, 0)
-		rgb    = []uint8{start.R, start.G, start.B}
 		ticks  = math.Floor(50 / frequency)
-		deltas = make([]int, len(rgb))
+		deltaR = int(math.Ceil(float64(base.R) / ticks))
+		deltaG = int(math.Ceil(float64(base.G) / ticks))
+		deltaB = int(math.Ceil(float64(base.B) / ticks))
 	)
-	for i, value := range rgb {
-		deltas[i] = int(math.Ceil(float64(value) / ticks))
-	}
 	for i := 0; i < int(ticks); i++ {
-		newRgb := make([]uint8, len(rgb))
-		for j, value := range rgb {
-			newRgb[j] = utils.MaxUint8(0, value-uint8(deltas[j]*i))
-		}
-		colors = append(colors, utils.NewRGB(newRgb[0], newRgb[1], newRgb[2]))
+		r := utils.MaxUint8(0, base.R-uint8(deltaR*i))
+		g := utils.MaxUint8(0, base.G-uint8(deltaG*i))
+		b := utils.MaxUint8(0, base.B-uint8(deltaB*i))
+		colors = append(colors, utils.NewRGB(r, g, b))
 	}
-	reversed := utils.ReverseRGB(colors)
-	if lastRGB := colors[len(colors)-1]; !lastRGB.IsSame(utils.BlackRGB()) {
-		colors = append(colors, utils.BlackRGB())
-	}
-	return append(colors, reversed...)
+	colors = append(colors, utils.BlackRGB())
+	return append(colors, utils.ReverseRGB(colors)[1:]...)
 }
 
 func (cc *ColorControl) newBindMeta(game, event string, color interface{}) controls.BindMeta {
