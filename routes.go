@@ -1,10 +1,13 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"time"
 
+	"github.com/yi-zhang/rival-710-extreme-feedback/controls"
+	"github.com/yi-zhang/rival-710-extreme-feedback/controls/rival710"
 	"github.com/yi-zhang/rival-710-extreme-feedback/utils"
 
 	"github.com/go-chi/chi"
@@ -12,7 +15,12 @@ import (
 )
 
 var (
-	router = chi.NewRouter()
+	router     = chi.NewRouter()
+	controller = rival710.Controller{
+		Color:   &rival710.ColorControl{},
+		Screen:  &rival710.ScreenControl{},
+		Tactile: &rival710.TactileControl{},
+	}
 )
 
 func init() {
@@ -28,9 +36,16 @@ func init() {
 func getRoutes() *chi.Mux {
 	router.Post("/notify", func(w http.ResponseWriter, r *http.Request) {
 		body, ok := utils.ParseJSON(r.Body)
-		if ok {
-			log.Print(body)
+		if !ok {
+			return
 		}
+		meta := controls.NotificationMeta{
+			Event: fmt.Sprint(body["event"]),
+			Mode:  fmt.Sprint(body["mode"]),
+			Data:  body["data"],
+		}
+		log.Print(meta)
+		controller.Execute(meta)
 	})
 	return router
 }

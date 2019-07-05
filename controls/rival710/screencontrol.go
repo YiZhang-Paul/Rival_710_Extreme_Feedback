@@ -58,7 +58,7 @@ func (sc *ScreenControl) applyShift(meta controls.ScreenMeta, interval, event in
 }
 
 func (sc *ScreenControl) startTimer(meta controls.ScreenMeta, event, seconds int, prefix string) bool {
-	if seconds > 0 && math.Abs(sc.totalSeconds-seconds) >= 1.5 {
+	if seconds > 0 && math.Abs(float64(sc.totalSeconds-seconds)) >= 1.5 {
 		sc.totalSeconds = seconds
 	}
 	if sc.event == event {
