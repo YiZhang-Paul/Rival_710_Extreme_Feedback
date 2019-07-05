@@ -2,29 +2,29 @@ package controls
 
 // ci events
 const (
-	passingColor = iota + 1
-	passingScreen
-	brokenColor
-	brokenScreen
-	buildingColor
-	buildingScreen
-	builtScreen
-	builtTactile
-	buildFailedScreen
-	buildFailedTactile
+	PassingColor = iota + 1
+	PassingScreen
+	BrokenColor
+	BrokenScreen
+	BuildingColor
+	BuildingScreen
+	BuiltScreen
+	BuiltTactile
+	BuildFailedScreen
+	BuildFailedTactile
 )
 
 // cd events
 const (
-	deployingColor = iota + 101
-	deployingScreen
-	pendingColor
-	pendingScreen
-	pendingTactile
-	deployBrokenColor
-	deployBrokenScreen
-	deployedScreen
-	deployedTactile
-	deployFailedScreen
-	deployFailedTactile
+	DeployingColor = iota + 101
+	DeployingScreen
+	PendingColor
+	PendingScreen
+	PendingTactile
+	DeployBrokenColor
+	DeployBrokenScreen
+	DeployedScreen
+	DeployedTactile
+	DeployFailedScreen
+	DeployFailedTactile
 )

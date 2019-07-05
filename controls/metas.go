@@ -47,7 +47,7 @@ type ColorMeta struct {
 // ScreenMeta for OLED screen control
 type ScreenMeta struct {
 	ControlMeta
-	Content []string `json:"content"`
+	Content []string `json:"content,omitempty"`
 	Icon    int      `json:"icon,omitempty"`
 	Prefix  string   `json:"prefix,omitempty"`
 	Bold    bool     `json:"bold,omitempty"`

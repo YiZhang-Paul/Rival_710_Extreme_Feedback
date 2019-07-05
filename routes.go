@@ -16,11 +16,7 @@ import (
 
 var (
 	router     = chi.NewRouter()
-	controller = rival710.Controller{
-		Color:   &rival710.ColorControl{},
-		Screen:  &rival710.ScreenControl{},
-		Tactile: &rival710.TactileControl{},
-	}
+	controller = rival710.NewController()
 )
 
 func init() {
