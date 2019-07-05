@@ -14,6 +14,42 @@ type Controller struct {
 	Tactile tactileController
 }
 
+func newControlMeta() *controls.ControlMeta {
+	return &controls.ControlMeta{
+		Game:       game,
+		BindAPI:    bindAPI,
+		TriggerAPI: triggerAPI,
+		RemoveAPI:  removeEventAPI,
+	}
+}
+
+func newColorMeta(color *utils.RGB, frequency float64) *controls.ColorMeta {
+	return &controls.ColorMeta{
+		ControlMeta: *newControlMeta(),
+		Color:       color,
+		Frequency:   frequency,
+	}
+}
+
+func newScreenMeta(content []string, icon int, prefix string, bold bool) *controls.ScreenMeta {
+	return &controls.ScreenMeta{
+		ControlMeta: *newControlMeta(),
+		Content:     content,
+		Icon:        icon,
+		Prefix:      prefix,
+		Bold:        bold,
+	}
+}
+
+func newTactileMeta(name string, frequency, limit int) *controls.TactileMeta {
+	return &controls.TactileMeta{
+		ControlMeta: *newControlMeta(),
+		Type:        name,
+		Frequency:   frequency,
+		Limit:       limit,
+	}
+}
+
 // RemoveGame de-registers given game from SteelSeries Engine
 func (c Controller) RemoveGame(game string) {
 	data := map[string]interface{}{"game": game}

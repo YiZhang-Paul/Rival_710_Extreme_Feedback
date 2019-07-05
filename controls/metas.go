@@ -42,7 +42,6 @@ type ColorMeta struct {
 	ControlMeta
 	Color     *utils.RGB `json:"color"`
 	Frequency float64    `json:"frequency,omitempty"`
-	Limit     int        `json:"limit,omitempty"`
 }
 
 // ScreenMeta for OLED screen control
@@ -51,7 +50,6 @@ type ScreenMeta struct {
 	Content []string `json:"content"`
 	Icon    int      `json:"icon,omitempty"`
 	Prefix  string   `json:"prefix,omitempty"`
-	Suffix  string   `json:"suffix,omitempty"`
 	Bold    bool     `json:"bold,omitempty"`
 }
 
