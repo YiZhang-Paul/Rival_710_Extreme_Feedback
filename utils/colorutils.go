@@ -57,3 +57,12 @@ func YellowRGB() *RGB {
 func PinkRGB() *RGB {
 	return NewRGB(255, 0, 255)
 }
+
+// ReverseRGB returns a new reversed collection of colors
+func ReverseRGB(colors []*RGB) []*RGB {
+	reversed := make([]*RGB, 0)
+	for i := len(colors) - 1; i >= 0; i-- {
+		reversed = append(reversed, colors[i])
+	}
+	return reversed
+}
