@@ -39,7 +39,7 @@ func (sc *ScreenControl) applyShift(meta controls.ScreenMeta, interval, event in
 	}
 	var (
 		loop         func(int)
-		milliseconds = time.Duration(interval) * time.Microsecond
+		milliseconds = time.Duration(interval) * time.Millisecond
 	)
 	loop = func(index int) {
 		if sc.event != event {
