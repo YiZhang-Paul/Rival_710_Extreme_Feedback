@@ -15,7 +15,7 @@ type screenController interface {
 	bindText(controls.ScreenMeta, int) bool
 	applyStatic(controls.ScreenMeta, int) bool
 	applyShift(controls.ScreenMeta, int, int) bool
-	startTimer(controls.ScreenMeta, int, int, string) bool
+	startTimer(controls.ScreenMeta, int, int) bool
 }
 
 type tactileController interface {

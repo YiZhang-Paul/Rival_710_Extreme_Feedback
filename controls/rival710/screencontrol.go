@@ -57,7 +57,7 @@ func (sc *ScreenControl) applyShift(meta controls.ScreenMeta, interval, event in
 	return true
 }
 
-func (sc *ScreenControl) startTimer(meta controls.ScreenMeta, event, seconds int, prefix string) bool {
+func (sc *ScreenControl) startTimer(meta controls.ScreenMeta, event, seconds int) bool {
 	if seconds > 0 && math.Abs(float64(sc.totalSeconds-seconds)) >= 1.5 {
 		sc.totalSeconds = seconds
 	}
@@ -69,7 +69,7 @@ func (sc *ScreenControl) startTimer(meta controls.ScreenMeta, event, seconds int
 		if sc.event != event {
 			return
 		}
-		text := fmt.Sprintf("%s%s", prefix, utils.FormatTime(sc.totalSeconds))
+		text := fmt.Sprintf("%s%s", meta.Prefix, utils.FormatTime(sc.totalSeconds))
 		sc.applyText(meta, text, event)
 		select {
 		case <-time.After(time.Second):
@@ -90,7 +90,6 @@ func (sc ScreenControl) newBindMeta(screenMeta controls.ScreenMeta, event string
 	datas := map[string]interface{}{
 		"has-text": true,
 		"prefix":   screenMeta.Prefix,
-		"suffix":   screenMeta.Suffix,
 		"bold":     screenMeta.Bold,
 	}
 	if screenMeta.Icon != 0 {

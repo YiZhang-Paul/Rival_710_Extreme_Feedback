@@ -153,12 +153,14 @@ func (c Controller) Execute(meta controls.NotificationMeta) {
 	}
 }
 
-func (c Controller) executeCi(mode string, data map[string]interface{}) {
-	switch mode {
+func (c Controller) handleComplete(data map[string]interface{}, screenEvent, tactileEvent int) {
+	branch, ok := utils.StringFromMap(data, "branch")
+	if !ok {
+		log.Print("Missing branch information.")
+		return
 	}
-}
-
-func (c Controller) executeCd(mode string, data map[string]interface{}) {
-	switch mode {
-	}
+	screenMeta := newScreenMeta([]string{branch, ""}, 0, "", false)
+	c.Screen.applyStatic(*screenMeta, screenEvent)
+	tactileMeta := newTactileMeta("", 0, 0)
+	c.Tactile.applyTactile(*tactileMeta, tactileEvent)
 }
