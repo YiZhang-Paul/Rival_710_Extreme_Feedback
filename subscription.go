@@ -20,9 +20,9 @@ func subscribe(target, callback string) (string, error) {
 		return "", err
 	}
 	defer res.Body.Close()
-	if id, err := ioutil.ReadAll(res.Body); err != nil {
+	id, err := ioutil.ReadAll(res.Body)
+	if err != nil {
 		return "", err
-	} else {
-		return string(id), nil
 	}
+	return string(id), nil
 }
