@@ -15,6 +15,16 @@ func NextIndex(collection []string, index int) int {
 	return index + 1
 }
 
+// StringPrefixSum returns a list of prefix sum for string type.
+// e.g, "text" -> ["", "t", "te", "tex", "text"]
+func StringPrefixSum(text string) []string {
+	sum := make([]string, 0)
+	for i := range text {
+		sum = append(sum, text[0:i])
+	}
+	return append(sum, text)
+}
+
 // TernaryString is a simple implementation of ternary operator.
 // Only use this for trivial assignments as all expressions will be evaluated
 func TernaryString(condition bool, ifTrue, ifFalse string) string {
