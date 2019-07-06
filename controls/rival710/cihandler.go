@@ -60,7 +60,7 @@ func (c Controller) handleBuilding(data map[string]interface{}) {
 		minutes  = int(time) / 60000
 		prefix   = utils.TernaryString(minutes < 1, "<", "~")
 		suffix   = utils.TernaryString(minutes > 1, "s", "")
-		duration = fmt.Sprintf("%s%d%smin", prefix, minutes, suffix)
+		duration = fmt.Sprintf("%s%dmin%s", prefix, utils.MaxInt(1, minutes), suffix)
 		content  = fmt.Sprintf("%d|%s", int(total), duration)
 	)
 	screenMeta := newScreenMeta([]string{content}, 0, "", false)
