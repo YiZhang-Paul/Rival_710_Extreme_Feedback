@@ -1,9 +1,6 @@
 package utils
 
-import (
-	"log"
-	"testing"
-)
+import "testing"
 
 func TestNextIndex(t *testing.T) {
 	var (
@@ -105,7 +102,6 @@ func TestParseToStrings(t *testing.T) {
 	}
 	for _, c := range cases {
 		actual := ParseToStrings(c.data)
-		log.Println(actual)
 		for i, text := range actual {
 			if len(actual) != len(c.expected) || text != c.expected[i] {
 				t.Errorf("ParseToStrings(%v) == %v. Expected %v", c.data, actual, c.expected)

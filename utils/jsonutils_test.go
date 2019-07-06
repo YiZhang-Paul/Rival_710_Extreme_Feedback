@@ -18,6 +18,10 @@ func TestParseJSON(t *testing.T) {
 	if !ok || parsed["a"] != float64(1) || parsed["b"] != "some text" {
 		t.Errorf("ParseJSON(%v) does not return expected JSON.", testJSON)
 	}
+	parsed, ok = ParseJSON(bytes.NewBuffer([]byte("invalid_text")))
+	if ok {
+		t.Errorf(`ParseJSON("invalid_text") should fail to parse JSON.`)
+	}
 }
 
 func TestParseJSONFile(t *testing.T) {
