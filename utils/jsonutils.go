@@ -43,7 +43,6 @@ func PostJSON(url string, data interface{}) bool {
 		log.Println(err)
 		return false
 	}
-
 	_, err = http.Post(url, "application/json", bytes.NewBuffer(jsonData))
 	if err != nil {
 		log.Println(err)

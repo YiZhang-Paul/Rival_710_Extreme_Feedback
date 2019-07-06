@@ -16,7 +16,7 @@ type ColorControl struct {
 }
 
 func (cc ColorControl) bindStatic(meta controls.ColorMeta, event int) bool {
-	data := cc.newBindMeta(meta.Game, strconv.Itoa(event), meta.Color)
+	data := cc.newBindMeta(meta.Game, event, meta.Color)
 	return utils.PostJSON(meta.BindAPI, data)
 }
 
@@ -33,7 +33,7 @@ func (cc ColorControl) bindBlink(meta controls.ColorMeta, event int) bool {
 			"color": utils.BlackRGB(),
 		}
 		colors = []interface{}{on, off}
-		data   = cc.newBindMeta(meta.Game, strconv.Itoa(event), colors)
+		data   = cc.newBindMeta(meta.Game, event, colors)
 	)
 	return utils.PostJSON(meta.BindAPI, data)
 }
@@ -45,7 +45,7 @@ func (cc ColorControl) bindBreath(meta controls.ColorMeta, event int) bool {
 	}
 	var (
 		colors = getBreathColorRanges(meta.Color, meta.Frequency)
-		data   = cc.newBindMeta(meta.Game, strconv.Itoa(event), colors)
+		data   = cc.newBindMeta(meta.Game, event, colors)
 	)
 	return utils.PostJSON(meta.BindAPI, data)
 }
@@ -147,9 +147,9 @@ func getBreathColor(rgb, deltas []uint8, tick uint8) *utils.RGB {
 	return utils.NewRGB(newRgb[0], newRgb[1], newRgb[2])
 }
 
-func (cc *ColorControl) newBindMeta(game, event string, color interface{}) controls.BindMeta {
+func (cc *ColorControl) newBindMeta(game string, event int, color interface{}) controls.BindMeta {
 	var (
-		meta         = controls.NewBindMeta(game, event)
+		meta         = controls.NewBindMeta(game, strconv.Itoa(event))
 		logoHandler  = controls.NewDeviceHandler("mouse", "logo", "color")
 		wheelHandler = controls.NewDeviceHandler("mouse", "wheel", "color")
 	)

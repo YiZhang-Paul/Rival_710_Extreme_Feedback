@@ -145,7 +145,6 @@ func (c Controller) Execute(meta controls.NotificationMeta) {
 		log.Println("Invalid notification format.")
 		return
 	}
-
 	if meta.Event == "ci" {
 		c.executeCi(meta.Mode, data)
 	} else if meta.Event == "cd" {

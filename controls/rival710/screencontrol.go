@@ -18,7 +18,7 @@ type ScreenControl struct {
 }
 
 func (sc ScreenControl) bindText(meta controls.ScreenMeta, event int) bool {
-	data := sc.newBindMeta(meta, strconv.Itoa(event))
+	data := sc.newBindMeta(meta, event)
 	return utils.PostJSON(meta.BindAPI, data)
 }
 
@@ -82,16 +82,16 @@ func (sc *ScreenControl) startTimer(meta controls.ScreenMeta, event, seconds int
 	return true
 }
 
-func (sc ScreenControl) newBindMeta(screenMeta controls.ScreenMeta, event string) controls.BindMeta {
+func (sc ScreenControl) newBindMeta(screenMeta controls.ScreenMeta, event int) controls.BindMeta {
 	var (
-		meta    = controls.NewBindMeta(screenMeta.Game, event)
+		meta    = controls.NewBindMeta(screenMeta.Game, strconv.Itoa(event))
 		handler = controls.NewDeviceHandler("screened", "one", "screen")
+		datas   = map[string]interface{}{
+			"has-text": true,
+			"prefix":   screenMeta.Prefix,
+			"bold":     screenMeta.Bold,
+		}
 	)
-	datas := map[string]interface{}{
-		"has-text": true,
-		"prefix":   screenMeta.Prefix,
-		"bold":     screenMeta.Bold,
-	}
 	if screenMeta.Icon != 0 {
 		datas["icon-id"] = screenMeta.Icon
 	}

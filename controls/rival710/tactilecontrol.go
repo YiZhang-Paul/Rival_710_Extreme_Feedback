@@ -16,10 +16,10 @@ func (tc TactileControl) bindTactile(meta controls.TactileMeta, event int) bool 
 			"frequency":    meta.Frequency,
 			"repeat_limit": meta.Limit,
 		}
-		pattern = map[string]interface{}{"type": meta.Type}
+		pattern  = map[string]interface{}{"type": meta.Type}
+		patterns = []map[string]interface{}{pattern}
+		data     = tc.newBindMeta(meta.Game, event, patterns, rate)
 	)
-	patterns := []map[string]interface{}{pattern}
-	data := tc.newBindMeta(meta.Game, strconv.Itoa(event), patterns, rate)
 	return utils.PostJSON(meta.BindAPI, data)
 }
 
@@ -28,9 +28,9 @@ func (tc TactileControl) applyTactile(meta controls.TactileMeta, event int) bool
 	return utils.PostJSON(meta.TriggerAPI, data)
 }
 
-func (tc TactileControl) newBindMeta(game, event string, pattern, rate interface{}) controls.BindMeta {
+func (tc TactileControl) newBindMeta(game string, event int, pattern, rate interface{}) controls.BindMeta {
 	var (
-		meta    = controls.NewBindMeta(game, event)
+		meta    = controls.NewBindMeta(game, strconv.Itoa(event))
 		handler = controls.NewDeviceHandler("tactile", "one", "vibrate")
 	)
 	handler.Pattern = pattern

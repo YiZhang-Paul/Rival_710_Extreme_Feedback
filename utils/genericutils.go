@@ -75,8 +75,10 @@ func MinusUint8(a, b uint8) uint8 {
 // ParseToStrings will try to parse dynamic data into a list of strings.
 // It assumes the underlying data to be a list of float64
 func ParseToStrings(data interface{}) []string {
-	result := make([]string, 0)
-	values, ok := data.([]interface{})
+	var (
+		result     = make([]string, 0)
+		values, ok = data.([]interface{})
+	)
 	if !ok {
 		log.Printf("Failed to parse %v into collection.\n", data)
 		return result
