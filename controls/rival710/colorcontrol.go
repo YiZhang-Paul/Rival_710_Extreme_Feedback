@@ -114,7 +114,7 @@ func getBreathColorRanges(start *utils.RGB, frequency float64) []map[string]inte
 		low := (steps + 1) * i
 		high := utils.MinInt(100, low+steps)
 		ranges = append(ranges, map[string]interface{}{
-			"low":   low,
+			"low":   utils.MinInt(100, low),
 			"high":  utils.TernaryInt(i != len(colors)-1, high, 100),
 			"color": color,
 		})
@@ -126,18 +126,25 @@ func getBreathColors(base *utils.RGB, frequency float64) []*utils.RGB {
 	var (
 		colors = make([]*utils.RGB, 0)
 		ticks  = math.Floor(50 / frequency)
-		deltaR = int(math.Ceil(float64(base.R) / ticks))
-		deltaG = int(math.Ceil(float64(base.G) / ticks))
-		deltaB = int(math.Ceil(float64(base.B) / ticks))
+		rgb    = []uint8{base.R, base.G, base.B}
+		deltas = make([]uint8, len(rgb))
 	)
+	for i, value := range rgb {
+		deltas[i] = uint8(math.Ceil(float64(value) / ticks))
+	}
 	for i := 0; i < int(ticks); i++ {
-		r := utils.MaxUint8(0, base.R-uint8(deltaR*i))
-		g := utils.MaxUint8(0, base.G-uint8(deltaG*i))
-		b := utils.MaxUint8(0, base.B-uint8(deltaB*i))
-		colors = append(colors, utils.NewRGB(r, g, b))
+		colors = append(colors, getBreathColor(rgb, deltas, uint8(i)))
 	}
 	colors = append(colors, utils.BlackRGB())
 	return append(colors, utils.ReverseRGB(colors)[1:]...)
+}
+
+func getBreathColor(rgb, deltas []uint8, tick uint8) *utils.RGB {
+	newRgb := make([]uint8, len(rgb))
+	for i, delta := range deltas {
+		newRgb[i] = utils.MinusUint8(rgb[i], utils.MultiplyUint8(delta, tick))
+	}
+	return utils.NewRGB(newRgb[0], newRgb[1], newRgb[2])
 }
 
 func (cc *ColorControl) newBindMeta(game, event string, color interface{}) controls.BindMeta {

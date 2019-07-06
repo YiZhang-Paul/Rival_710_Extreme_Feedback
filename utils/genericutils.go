@@ -2,6 +2,7 @@ package utils
 
 import (
 	"log"
+	"math"
 	"strconv"
 )
 
@@ -50,6 +51,25 @@ func TernaryInt(condition bool, ifTrue, ifFalse int) int {
 		return ifTrue
 	}
 	return ifFalse
+}
+
+// MultiplyUint8 multiplies uint8 inputs without wrapping
+func MultiplyUint8(a, b uint8) uint8 {
+	if a == 0 || b == 0 {
+		return 0
+	}
+	if math.MaxUint8/a >= b {
+		return a * b
+	}
+	return math.MaxUint8
+}
+
+// MinusUint8 minuses uint8 inputs without wrapping
+func MinusUint8(a, b uint8) uint8 {
+	if a > b {
+		return a - b
+	}
+	return 0
 }
 
 // ParseToStrings will try to parse dynamic data into a list of strings.
