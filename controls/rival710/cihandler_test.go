@@ -9,7 +9,7 @@ var (
 	controller     *Controller
 )
 
-func setup() {
+func setupMockController() {
 	colorControl = newMockColorController()
 	screenControl = newMockScreenController()
 	tactileControl = newMockTactileController()
@@ -17,7 +17,7 @@ func setup() {
 }
 
 func TestHandlePassing(t *testing.T) {
-	setup()
+	setupMockController()
 	data := map[string]interface{}{
 		"pull":   []interface{}{float64(2), float64(6), float64(8)},
 		"merge":  []interface{}{float64(0), float64(3), float64(4)},
@@ -43,7 +43,7 @@ func TestHandlePassing(t *testing.T) {
 }
 
 func TestHandleBroken(t *testing.T) {
-	setup()
+	setupMockController()
 	data := map[string]interface{}{
 		"total": float64(2),
 		"time":  float64(3600000),
@@ -70,7 +70,7 @@ func TestHandleBroken(t *testing.T) {
 }
 
 func TestHandleBuildingOneMinute(t *testing.T) {
-	setup()
+	setupMockController()
 	data := map[string]interface{}{
 		"total": float64(2),
 		"time":  float64(60000),
@@ -92,7 +92,7 @@ func TestHandleBuildingOneMinute(t *testing.T) {
 }
 
 func TestHandleBuildingLessThanOneMinute(t *testing.T) {
-	setup()
+	setupMockController()
 	data := map[string]interface{}{
 		"total": float64(2),
 		"time":  float64(59999),
@@ -108,7 +108,7 @@ func TestHandleBuildingLessThanOneMinute(t *testing.T) {
 }
 
 func TestHandleBuildingMoreThanOneMinute(t *testing.T) {
-	setup()
+	setupMockController()
 	data := map[string]interface{}{
 		"total": float64(2),
 		"time":  float64(180000),
@@ -124,10 +124,10 @@ func TestHandleBuildingMoreThanOneMinute(t *testing.T) {
 }
 
 func TestHandleBuilt(t *testing.T) {
-	setup()
+	setupMockController()
 	controller.executeCi("built", map[string]interface{}{"branch": "DEV"})
 	var (
-		content       = []string{"DEV", ""}
+		content       = []string{"DEV"}
 		actualContent = screenControl.applyStaticSpy.meta.Content
 	)
 	for i, text := range content {
@@ -139,10 +139,10 @@ func TestHandleBuilt(t *testing.T) {
 }
 
 func TestHandleBuildFailed(t *testing.T) {
-	setup()
+	setupMockController()
 	controller.executeCi("build-failed", map[string]interface{}{"branch": "PROD"})
 	var (
-		content       = []string{"PROD", ""}
+		content       = []string{"PROD"}
 		actualContent = screenControl.applyStaticSpy.meta.Content
 	)
 	for i, text := range content {

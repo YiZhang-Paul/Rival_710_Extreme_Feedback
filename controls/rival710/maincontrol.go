@@ -158,7 +158,7 @@ func (c Controller) handleComplete(data map[string]interface{}, screenEvent, tac
 		log.Print("Missing branch information.")
 		return
 	}
-	screenMeta := newScreenMeta([]string{branch, ""}, 0, "", false)
+	screenMeta := newScreenMeta([]string{branch}, 0, "", false)
 	c.Screen.applyStatic(*screenMeta, screenEvent)
 	tactileMeta := newTactileMeta("", 0, 0)
 	c.Tactile.applyTactile(*tactileMeta, tactileEvent)
