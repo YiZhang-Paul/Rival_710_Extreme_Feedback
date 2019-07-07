@@ -1,6 +1,10 @@
 package rival710
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/yi-zhang/rival-710-extreme-feedback/controls"
+)
 
 var (
 	colorControl   *mockColorController
@@ -18,12 +22,16 @@ func setupMockController() {
 
 func TestHandlePassing(t *testing.T) {
 	setupMockController()
-	data := map[string]interface{}{
-		"pull":   []interface{}{float64(2), float64(6), float64(8)},
-		"merge":  []interface{}{float64(0), float64(3), float64(4)},
-		"deploy": []interface{}{float64(0), float64(3), float64(3)},
+	notification := controls.NotificationMeta{
+		Event: "ci",
+		Mode:  "passing",
+		Data: map[string]interface{}{
+			"pull":   []interface{}{float64(2), float64(6), float64(8)},
+			"merge":  []interface{}{float64(0), float64(3), float64(4)},
+			"deploy": []interface{}{float64(0), float64(3), float64(3)},
+		},
 	}
-	controller.executeCi("passing", data)
+	controller.Execute(notification)
 	var (
 		content       = []string{"P: 2/6/8", "M: 0/3/4", "D: 0/3/3"}
 		actualContent = screenControl.applyShiftSpy.meta.Content
@@ -44,11 +52,15 @@ func TestHandlePassing(t *testing.T) {
 
 func TestHandleBroken(t *testing.T) {
 	setupMockController()
-	data := map[string]interface{}{
-		"total": float64(2),
-		"time":  float64(3600000),
+	notification := controls.NotificationMeta{
+		Event: "ci",
+		Mode:  "broken",
+		Data: map[string]interface{}{
+			"total": float64(2),
+			"time":  float64(3600000),
+		},
 	}
-	controller.executeCi("broken", data)
+	controller.Execute(notification)
 	var (
 		prefix                  = "2|"
 		actualPrefix            = screenControl.startTimerSpy.meta.Prefix
@@ -71,11 +83,15 @@ func TestHandleBroken(t *testing.T) {
 
 func TestHandleBuildingOneMinute(t *testing.T) {
 	setupMockController()
-	data := map[string]interface{}{
-		"total": float64(2),
-		"time":  float64(60000),
+	notification := controls.NotificationMeta{
+		Event: "ci",
+		Mode:  "building",
+		Data: map[string]interface{}{
+			"total": float64(2),
+			"time":  float64(60000),
+		},
 	}
-	controller.executeCi("building", data)
+	controller.Execute(notification)
 	var (
 		content       = "2|~1min"
 		actualContent = screenControl.applyStaticSpy.meta.Content[0]
@@ -93,11 +109,15 @@ func TestHandleBuildingOneMinute(t *testing.T) {
 
 func TestHandleBuildingLessThanOneMinute(t *testing.T) {
 	setupMockController()
-	data := map[string]interface{}{
-		"total": float64(2),
-		"time":  float64(59999),
+	notification := controls.NotificationMeta{
+		Event: "ci",
+		Mode:  "building",
+		Data: map[string]interface{}{
+			"total": float64(2),
+			"time":  float64(59999),
+		},
 	}
-	controller.executeCi("building", data)
+	controller.Execute(notification)
 	var (
 		content       = "2|<1min"
 		actualContent = screenControl.applyStaticSpy.meta.Content[0]
@@ -109,11 +129,15 @@ func TestHandleBuildingLessThanOneMinute(t *testing.T) {
 
 func TestHandleBuildingMoreThanOneMinute(t *testing.T) {
 	setupMockController()
-	data := map[string]interface{}{
-		"total": float64(2),
-		"time":  float64(180000),
+	notification := controls.NotificationMeta{
+		Event: "ci",
+		Mode:  "building",
+		Data: map[string]interface{}{
+			"total": float64(2),
+			"time":  float64(180000),
+		},
 	}
-	controller.executeCi("building", data)
+	controller.Execute(notification)
 	var (
 		content       = "2|~3mins"
 		actualContent = screenControl.applyStaticSpy.meta.Content[0]
@@ -125,7 +149,12 @@ func TestHandleBuildingMoreThanOneMinute(t *testing.T) {
 
 func TestHandleBuilt(t *testing.T) {
 	setupMockController()
-	controller.executeCi("built", map[string]interface{}{"branch": "DEV"})
+	notification := controls.NotificationMeta{
+		Event: "ci",
+		Mode:  "built",
+		Data:  map[string]interface{}{"branch": "DEV"},
+	}
+	controller.Execute(notification)
 	var (
 		content       = []string{"DEV"}
 		actualContent = screenControl.applyStaticSpy.meta.Content
@@ -140,7 +169,12 @@ func TestHandleBuilt(t *testing.T) {
 
 func TestHandleBuildFailed(t *testing.T) {
 	setupMockController()
-	controller.executeCi("build-failed", map[string]interface{}{"branch": "PROD"})
+	notification := controls.NotificationMeta{
+		Event: "ci",
+		Mode:  "build-failed",
+		Data:  map[string]interface{}{"branch": "PROD"},
+	}
+	controller.Execute(notification)
 	var (
 		content       = []string{"PROD"}
 		actualContent = screenControl.applyStaticSpy.meta.Content

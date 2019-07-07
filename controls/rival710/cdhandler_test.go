@@ -1,10 +1,19 @@
 package rival710
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/yi-zhang/rival-710-extreme-feedback/controls"
+)
 
 func TestHandleDeploying(t *testing.T) {
 	setupMockController()
-	controller.executeCd("deploying", map[string]interface{}{"branch": "UAT"})
+	notification := controls.NotificationMeta{
+		Event: "cd",
+		Mode:  "deploying",
+		Data:  map[string]interface{}{"branch": "UAT"},
+	}
+	controller.Execute(notification)
 	var (
 		content       = []string{"", "U", "UA", "UAT"}
 		actualContent = screenControl.applyShiftSpy.meta.Content
@@ -25,7 +34,12 @@ func TestHandleDeploying(t *testing.T) {
 
 func TestHandlePending(t *testing.T) {
 	setupMockController()
-	controller.executeCd("pending", map[string]interface{}{"branch": "DEV"})
+	notification := controls.NotificationMeta{
+		Event: "cd",
+		Mode:  "pending",
+		Data:  map[string]interface{}{"branch": "DEV"},
+	}
+	controller.Execute(notification)
 	var (
 		content                 = []string{"DEV", ""}
 		actualContent           = screenControl.applyShiftSpy.meta.Content
@@ -51,7 +65,12 @@ func TestHandlePending(t *testing.T) {
 
 func TestHandleDeployBroken(t *testing.T) {
 	setupMockController()
-	controller.executeCd("deploy-broken", map[string]interface{}{"branch": "PROD"})
+	notification := controls.NotificationMeta{
+		Event: "cd",
+		Mode:  "deploy-broken",
+		Data:  map[string]interface{}{"branch": "PROD"},
+	}
+	controller.Execute(notification)
 	var (
 		content                 = []string{"PROD", ""}
 		actualContent           = screenControl.applyShiftSpy.meta.Content
@@ -77,7 +96,12 @@ func TestHandleDeployBroken(t *testing.T) {
 
 func TestHandleDeployed(t *testing.T) {
 	setupMockController()
-	controller.executeCd("deployed", map[string]interface{}{"branch": "UAT"})
+	notification := controls.NotificationMeta{
+		Event: "cd",
+		Mode:  "deployed",
+		Data:  map[string]interface{}{"branch": "UAT"},
+	}
+	controller.Execute(notification)
 	var (
 		content       = []string{"UAT"}
 		actualContent = screenControl.applyStaticSpy.meta.Content
@@ -92,7 +116,12 @@ func TestHandleDeployed(t *testing.T) {
 
 func TestHandleDeployFailed(t *testing.T) {
 	setupMockController()
-	controller.executeCd("deploy-failed", map[string]interface{}{"branch": "DEV"})
+	notification := controls.NotificationMeta{
+		Event: "cd",
+		Mode:  "deploy-failed",
+		Data:  map[string]interface{}{"branch": "DEV"},
+	}
+	controller.Execute(notification)
 	var (
 		content       = []string{"DEV"}
 		actualContent = screenControl.applyStaticSpy.meta.Content
