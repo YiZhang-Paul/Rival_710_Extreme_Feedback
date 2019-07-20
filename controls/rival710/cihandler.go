@@ -52,7 +52,7 @@ func (c Controller) handleBroken(data map[string]interface{}) {
 func (c Controller) handleBuilding(data map[string]interface{}) {
 	total, ok := utils.FloatFromMap(data, "total")
 	if !ok {
-		log.Print("Missing total number of broken builds.")
+		log.Print("Missing total number of ongoing builds.")
 		return
 	}
 	var (
