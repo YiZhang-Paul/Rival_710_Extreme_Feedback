@@ -121,14 +121,14 @@ func (c Controller) bindPendingEvent() {
 	c.Tactile.bindTactile(*tactileMeta, controls.PendingTactile)
 	screenMeta := newScreenMeta(nil, 15, "", false)
 	c.Screen.bindText(*screenMeta, controls.PendingScreen)
-	colorMeta := newColorMeta(utils.PinkRGB(), 2)
+	colorMeta := newColorMeta(utils.WhiteRGB(), 2)
 	c.Color.bindBlink(*colorMeta, controls.PendingColor)
 }
 
 func (c Controller) bindDeployBrokenEvent() {
 	screenMeta := newScreenMeta(nil, 6, "", false)
 	c.Screen.bindText(*screenMeta, controls.DeployBrokenScreen)
-	colorMeta := newColorMeta(utils.WhiteRGB(), 2)
+	colorMeta := newColorMeta(utils.PinkRGB(), 2)
 	c.Color.bindBlink(*colorMeta, controls.DeployBrokenColor)
 }
 
