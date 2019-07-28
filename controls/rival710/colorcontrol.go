@@ -30,7 +30,7 @@ func (cc ColorControl) bindBlink(meta controls.ColorMeta, event int) bool {
 		off = map[string]interface{}{
 			"low":   0,
 			"high":  0,
-			"color": utils.BlackRGB(),
+			"color": utils.NewRGB(0, 0, 0),
 		}
 		colors = []interface{}{on, off}
 		data   = cc.newBindMeta(meta.Game, event, colors)
@@ -135,7 +135,7 @@ func getBreathColors(base *utils.RGB, frequency float64) []*utils.RGB {
 	for i := 0; i < int(ticks); i++ {
 		colors = append(colors, getBreathColor(rgb, deltas, uint8(i)))
 	}
-	colors = append(colors, utils.BlackRGB())
+	colors = append(colors, utils.NewRGB(0, 0, 0))
 	return append(colors, utils.ReverseRGB(colors)[1:]...)
 }
 

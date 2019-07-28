@@ -2,9 +2,22 @@ package rival710
 
 import (
 	"log"
+	"os"
 
 	"github.com/yi-zhang/rival-710-extreme-feedback/controls"
 	"github.com/yi-zhang/rival-710-extreme-feedback/utils"
+
+	// load color settings
+	_ "github.com/joho/godotenv/autoload"
+)
+
+var (
+	passingRGB      = utils.ParseRGB(os.Getenv("PASSING_RGB"))
+	brokenRGB       = utils.ParseRGB(os.Getenv("BROKEN_RGB"))
+	buildingRGB     = utils.ParseRGB(os.Getenv("BUILDING_RGB"))
+	deployingRGB    = utils.ParseRGB(os.Getenv("DEPLOYING_RGB"))
+	pendingRGB      = utils.ParseRGB(os.Getenv("PENDING_RGB"))
+	deployBrokenRGB = utils.ParseRGB(os.Getenv("DEPLOY_BROKEN_RGB"))
 )
 
 // Controller is the main control for device illumination, OLED screen and tactile feedback
@@ -74,21 +87,21 @@ func (c Controller) bindEvents() {
 func (c Controller) bindPassingEvent() {
 	screenMeta := newScreenMeta(nil, 1, "", false)
 	c.Screen.bindText(*screenMeta, controls.PassingScreen)
-	colorMeta := newColorMeta(utils.GreenRGB(), 2)
+	colorMeta := newColorMeta(passingRGB, 2)
 	c.Color.bindStatic(*colorMeta, controls.PassingColor)
 }
 
 func (c Controller) bindBrokenEvent() {
 	screenMeta := newScreenMeta(nil, 6, "", false)
 	c.Screen.bindText(*screenMeta, controls.BrokenScreen)
-	colorMeta := newColorMeta(utils.RedRGB(), 2)
+	colorMeta := newColorMeta(brokenRGB, 2)
 	c.Color.bindBlink(*colorMeta, controls.BrokenColor)
 }
 
 func (c Controller) bindBuildingEvent() {
 	screenMeta := newScreenMeta(nil, 13, "", false)
 	c.Screen.bindText(*screenMeta, controls.BuildingScreen)
-	colorMeta := newColorMeta(utils.YellowRGB(), 2)
+	colorMeta := newColorMeta(buildingRGB, 2)
 	c.Color.bindBreath(*colorMeta, controls.BuildingColor)
 }
 
@@ -112,7 +125,7 @@ func (c Controller) bindOnCompleteEvent() {
 func (c Controller) bindDeployingEvent() {
 	screenMeta := newScreenMeta(nil, 16, "", false)
 	c.Screen.bindText(*screenMeta, controls.DeployingScreen)
-	colorMeta := newColorMeta(utils.BlueRGB(), 2)
+	colorMeta := newColorMeta(deployingRGB, 2)
 	c.Color.bindBreath(*colorMeta, controls.DeployingColor)
 }
 
@@ -121,14 +134,14 @@ func (c Controller) bindPendingEvent() {
 	c.Tactile.bindTactile(*tactileMeta, controls.PendingTactile)
 	screenMeta := newScreenMeta(nil, 15, "", false)
 	c.Screen.bindText(*screenMeta, controls.PendingScreen)
-	colorMeta := newColorMeta(utils.WhiteRGB(), 2)
+	colorMeta := newColorMeta(pendingRGB, 2)
 	c.Color.bindBlink(*colorMeta, controls.PendingColor)
 }
 
 func (c Controller) bindDeployBrokenEvent() {
 	screenMeta := newScreenMeta(nil, 6, "", false)
 	c.Screen.bindText(*screenMeta, controls.DeployBrokenScreen)
-	colorMeta := newColorMeta(utils.PinkRGB(), 2)
+	colorMeta := newColorMeta(deployBrokenRGB, 2)
 	c.Color.bindBlink(*colorMeta, controls.DeployBrokenColor)
 }
 

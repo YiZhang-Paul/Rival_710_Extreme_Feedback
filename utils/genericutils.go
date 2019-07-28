@@ -116,3 +116,17 @@ func StringFromMap(table map[string]interface{}, key string) (string, bool) {
 		return value, true
 	}
 }
+
+// StringsToUint8s maps a slice of strings into a slice of uint8s
+func StringsToUint8s(data []string) []uint8 {
+	result := make([]uint8, len(data))
+	for i, value := range data {
+		parsed, err := strconv.Atoi(value)
+		if err != nil {
+			result[i] = 0
+		} else {
+			result[i] = uint8(parsed)
+		}
+	}
+	return result
+}
